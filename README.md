@@ -11,6 +11,7 @@ Le périmètre fonctionnel provient du cahier des charges fourni par le club. Le
 - [Système UI/UX](docs/DESIGN_SYSTEM.md)
 - [Journal des niveaux](docs/SUIVI.md)
 - [Décisions à confirmer](docs/DECISIONS.md)
+- [Procédure staging o2switch](docs/O2SWITCH_STAGING.md)
 
 ## État actuel
 

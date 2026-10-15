@@ -441,6 +441,28 @@ Le plan préparatoire figure dans `docs/PLAN.md`. Le club indique qu'il ne lance
 
 **État du niveau 4 : en attente de lancement par le club ; aucune implémentation commencée.**
 
+## Préparation de l'hébergement staging o2switch (15 octobre 2026)
+
+**État : procédure prête ; création du sous-domaine et déploiement en attente des informations du domaine et des actions cPanel/SSH du club.**
+
+### Plan
+
+1. Vérifier le domaine parent et le DNS o2switch, puis créer `staging.<domaine>`.
+2. Faire pointer la racine web uniquement vers `app/public`, garder le dépôt hors du répertoire public et protéger le staging par mot de passe.
+3. Préparer PHP 8.3, Composer, Node pour compiler les ressources, et une base MySQL de staging isolée.
+4. Cloner la branche `main`, installer les dépendances, compiler Vite, configurer un `.env` propre au serveur et migrer la base vide.
+5. Désigner un compte de test responsable, faire la recette fonctionnelle et responsive, puis attendre la validation manuelle du club.
+
+### Audit et préparation
+
+- Le dépôt Git local est propre et suit `origin/main` sur GitHub.
+- Le `composer.json` demande PHP `^8.2`; les ressources front-end sont compilées par Vite dans `public/build`.
+- Le seeder standard crée un utilisateur de démonstration : il ne doit pas être lancé sur le staging. Une commande console documentée permet de désigner le premier responsable après inscription d'un compte de test.
+- Le plan complet, les commandes et les paramètres de sécurité sont dans `docs/O2SWITCH_STAGING.md`.
+- Références vérifiées : [création de sous-domaines](https://faq.o2switch.fr/cpanel/domaines/configuration-sous-domaine/), [SSH](https://faq.o2switch.fr/guides/webmastering/connexion-ssh/), [Node.js](https://faq.o2switch.fr/guides/nodejs/application-reactjs/) et [protection par mot de passe](https://faq.o2switch.fr/cpanel/fichiers/protection-repertoire-web/).
+
+**Hébergement staging : aucune modification n'a encore été appliquée sur o2switch.**
+
 ## Préparation de la publication GitHub (15 octobre 2026)
 
 **État : commit local prêt ; dépôt distant et push en attente de la connexion GitHub.**
