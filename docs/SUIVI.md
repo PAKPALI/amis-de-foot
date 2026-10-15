@@ -440,3 +440,12 @@ Contrôle complémentaire : ESLint sur le nouvel accueil réussi. Aperçu enregi
 Le plan préparatoire figure dans `docs/PLAN.md`. Le club indique qu'il ne lance pas encore le niveau 4 et fournira les règles métier lorsqu'il décidera de le démarrer : montant/période, échéance et délai de grâce, traitement des paiements partiels, et obligations après suspension ou départ.
 
 **État du niveau 4 : en attente de lancement par le club ; aucune implémentation commencée.**
+
+## Préparation de la publication GitHub (15 octobre 2026)
+
+**État : commit local prêt ; dépôt distant et push en attente de la connexion GitHub.**
+
+- Le club a demandé la création/publication d'un dépôt public nommé `amis-de-foot`.
+- Le dépôt local n'avait pas de commit ni de remote ; un premier commit a été créé sur `main` (`fcf7e46`).
+- Avant le commit, le nom du compte de test a été retiré du journal. Les fichiers `.env`, journaux, `vendor`, `node_modules` et base locale sont ignorés et absents du commit.
+- Aucun dépôt GitHub n'a encore été créé et aucun code n'a encore été envoyé à GitHub. Il faut connecter le compte GitHub pour créer le dépôt et pousser `main`.
