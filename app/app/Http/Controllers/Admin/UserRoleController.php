@@ -22,7 +22,7 @@ class UserRoleController extends Controller
         return Inertia::render('admin/roles', [
             'members' => User::query()
                 ->orderBy('name')
-                ->get(['id', 'name', 'email', 'phone', 'role']),
+                ->get(['id', 'name', 'email', 'phone', 'role', 'account_status']),
             'roles' => array_map(
                 fn (UserRole $role) => ['value' => $role->value, 'label' => $this->label($role)],
                 UserRole::cases(),

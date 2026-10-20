@@ -54,6 +54,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (! $this->user()?->isAccountActive()) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'identifier' => 'Votre compte est désactivé. Contactez un administrateur du club.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

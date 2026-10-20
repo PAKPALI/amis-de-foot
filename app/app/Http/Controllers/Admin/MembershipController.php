@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Membership;
 use App\Models\User;
 use App\Notifications\MembershipDecisionNotification;
+use App\Services\CashLedger;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +48,11 @@ class MembershipController extends Controller
         ]);
     }
 
-    public function approve(Request $request, Membership $membership): RedirectResponse
+    public function approve(Request $request, Membership $membership, CashLedger $cashLedger): RedirectResponse
     {
         $actor = $request->user();
 
-        $membership = DB::transaction(function () use ($membership, $actor): Membership {
+        $membership = DB::transaction(function () use ($membership, $actor, $cashLedger): Membership {
             $locked = Membership::query()->lockForUpdate()->findOrFail($membership->id);
 
             if (! in_array($locked->status, [Membership::STATUS_AWAITING_PAYMENT, Membership::STATUS_AWAITING_APPROVAL], true)) {
@@ -77,6 +79,16 @@ class MembershipController extends Controller
                 'action' => 'payment_confirmed_and_approved',
                 'reason' => 'Règlement de l’adhésion confirmé par l’administrateur.',
             ]);
+
+            $cashLedger->recordSourceIncome(
+                $actor,
+                $locked->fee_amount,
+                CarbonImmutable::instance($now),
+                'membership_fee',
+                'Adhésion confirmée — '.$locked->user()->value('name'),
+                'membership',
+                $locked->id,
+            );
 
             return $locked;
         });

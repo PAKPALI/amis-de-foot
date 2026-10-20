@@ -23,6 +23,15 @@
 6. Retards, statistiques et exports.
 7. Pages publiques et blog.
 
+## Niveau 7 — Site public et publications
+
+- `PublicSiteController` alimente l'accueil, la présentation, le contact, la liste des actualités et la lecture d'un article publié.
+- `Article` conserve l'auteur, le titre, l'URL lisible, le résumé, le contenu, une galerie facultative limitée à trois photos, l'état brouillon/publié et la date de publication. La première photo sert de couverture dans les listes ; la page de lecture affiche toute la galerie dans un slider.
+- Les images de couverture sont stockées sur le disque public dans `storage/app/public/articles` et servies par le lien `public/storage`.
+- `ArticleController` et `ArticleRequest` réservent la rédaction et la publication au groupe de routes administrateur/responsable. Les brouillons et publications futures renvoient une page introuvable au public.
+- Les routes publiques sont `/`, `/le-club`, `/actualites`, `/actualites/{slug}` et `/contact`. La gestion se trouve dans `/administration/actualites`.
+- L'accueil affiche au plus trois publications récentes. Les pages utilisent le système visuel responsive commun et des métadonnées de page adaptées.
+
 Un paiement confirmé, ses affectations et son écriture de caisse doivent être créés dans une transaction unique. Une référence externe ou manuelle unique empêche le double traitement. Les montants sont des entiers FCFA. Les rapports distinguent date d'encaissement et période couverte.
 
 ## Organisation prévue

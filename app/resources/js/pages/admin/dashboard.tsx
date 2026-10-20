@@ -2,7 +2,7 @@ import { Reveal } from '@/components/ui/reveal';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, ClipboardList, LockKeyhole, ShieldCheck, UsersRound } from 'lucide-react';
+import { ArrowRight, BarChart3, ClipboardList, CreditCard, Newspaper, ShieldCheck, UsersRound } from 'lucide-react';
 
 interface AdministrationDashboardProps {
     auth: { user: User };
@@ -32,7 +32,7 @@ export default function AdministrationDashboard({ auth }: AdministrationDashboar
                     </section>
                 </Reveal>
 
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     <Reveal delay={0.08}>
                         <Link
                             href={route('admin.roles')}
@@ -68,18 +68,56 @@ export default function AdministrationDashboard({ auth }: AdministrationDashboar
                         </Link>
                     </Reveal>
                     <Reveal delay={0.22}>
-                        <article className="adf-soft-panel flex h-full flex-col rounded-[26px] p-6">
+                        <Link
+                            href={route('admin.contributions')}
+                            className="adf-soft-panel group flex h-full flex-col rounded-[26px] p-6 transition-transform duration-200 hover:-translate-y-1"
+                        >
                             <span className="flex size-11 items-center justify-center rounded-2xl bg-sky-100 text-sky-700">
-                                <LockKeyhole className="size-5" />
+                                <CreditCard className="size-5" />
                             </span>
-                            <h2 className="mt-8 text-lg font-bold">Opérations suivies</h2>
+                            <h2 className="mt-8 text-lg font-bold">Cotisations</h2>
                             <p className="text-muted-foreground mt-2 flex-1 text-sm leading-6">
-                                Les changements de rôle et les réinitialisations d’accès sont déjà journalisés.
+                                Enregistrez les paiements mensuels et suivez les reçus.
                             </p>
-                            <span className="text-muted-foreground mt-6 text-xs font-bold tracking-[0.14em] uppercase">En service</span>
-                        </article>
+                            <span className="text-primary mt-6 inline-flex items-center gap-2 text-sm font-bold">
+                                Gérer les cotisations <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                            </span>
+                        </Link>
+                    </Reveal>
+                    <Reveal delay={0.26}>
+                        <Link
+                            href={route('admin.articles')}
+                            className="adf-soft-panel group flex h-full flex-col rounded-[26px] p-6 transition-transform duration-200 hover:-translate-y-1"
+                        >
+                            <span className="flex size-11 items-center justify-center rounded-2xl bg-violet-100 text-violet-700">
+                                <Newspaper className="size-5" />
+                            </span>
+                            <h2 className="mt-8 text-lg font-bold">Actualités</h2>
+                            <p className="text-muted-foreground mt-2 flex-1 text-sm leading-6">
+                                Rédigez, préparez et publiez les nouvelles du club sur le site public.
+                            </p>
+                            <span className="text-primary mt-6 inline-flex items-center gap-2 text-sm font-bold">
+                                Gérer les publications <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                            </span>
+                        </Link>
                     </Reveal>
                 </div>
+
+                <Reveal delay={0.25}>
+                    <Link
+                        href={route('admin.statistics')}
+                        className="adf-soft-panel group flex items-center justify-between gap-5 rounded-[26px] p-6"
+                    >
+                        <span className="flex items-center gap-4">
+                            <BarChart3 className="size-7 text-blue-600" />
+                            <span>
+                                <strong className="block text-lg">Rapports et statistiques</strong>
+                                <span className="text-muted-foreground text-sm">Adhésions, cotisations, caisse et exports.</span>
+                            </span>
+                        </span>
+                        <ArrowRight className="size-5 text-blue-600" />
+                    </Link>
+                </Reveal>
 
                 <Reveal delay={0.28}>
                     <Link

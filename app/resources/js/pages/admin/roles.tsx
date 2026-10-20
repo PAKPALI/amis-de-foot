@@ -20,6 +20,7 @@ interface Member {
     email: string;
     phone: string | null;
     role: RoleOption['value'];
+    account_status: 'active' | 'suspended' | 'left';
 }
 
 interface RoleChange {
@@ -59,6 +60,7 @@ function RoleForm({ member, roles, canManageRoles }: { member: Member; roles: Ro
         reason: '',
     });
     const resetForm = useForm({ reason: '' });
+    const deactivateForm = useForm({ status: 'suspended', reason: '' });
 
     const submit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -106,6 +108,20 @@ function RoleForm({ member, roles, canManageRoles }: { member: Member; roles: Ro
             preserveScroll: true,
             onSuccess: () => resetForm.reset(),
         });
+    };
+
+    const deactivate = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const statusLabel = deactivateForm.data.status === 'left' ? 'parti' : 'suspendu';
+        const result = await ClubAlert.fire({
+            title: `Désactiver ce compte ?`,
+            text: `${member.name} ne pourra plus se connecter. Statut : ${statusLabel}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Désactiver',
+            cancelButtonText: 'Annuler',
+        });
+        if (result.isConfirmed) deactivateForm.patch(route('admin.members.deactivate', { user: member.id }), { preserveScroll: true });
     };
 
     return (
@@ -165,6 +181,19 @@ function RoleForm({ member, roles, canManageRoles }: { member: Member; roles: Ro
                     Réinitialiser l’accès
                 </Button>
             </form>
+            {member.account_status === 'active' ? (
+                <form className="grid gap-3 md:grid-cols-[auto_1fr_auto] md:items-end" onSubmit={deactivate}>
+                    <div className="grid gap-2">
+                        <Label htmlFor={`account-status-${member.id}`}>Statut</Label>
+                        <select id={`account-status-${member.id}`} className="border-input bg-background/75 h-11 rounded-xl border px-3 text-sm" value={deactivateForm.data.status} onChange={(event) => deactivateForm.setData('status', event.target.value as 'suspended' | 'left')}>
+                            <option value="suspended">Suspendu</option>
+                            <option value="left">Parti</option>
+                        </select>
+                    </div>
+                    <div className="grid gap-2"><Label htmlFor={`account-reason-${member.id}`}>Motif facultatif</Label><Input id={`account-reason-${member.id}`} value={deactivateForm.data.reason} onChange={(event) => deactivateForm.setData('reason', event.target.value)} placeholder="Ex. départ du club" /></div>
+                    <Button type="submit" variant="destructive" disabled={deactivateForm.processing}>Désactiver le compte</Button>
+                </form>
+            ) : <p className="text-sm font-semibold text-amber-500">Compte {member.account_status === 'left' ? 'parti' : 'suspendu'} : connexion bloquée.</p>}
         </div>
     );
 }

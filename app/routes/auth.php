@@ -34,7 +34,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware(['auth', 'password.changed'])->group(function () {
+Route::middleware(['auth', 'account.active', 'password.changed'])->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

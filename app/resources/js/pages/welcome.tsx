@@ -3,7 +3,7 @@ import { Brand } from '@/components/brand';
 import { Reveal } from '@/components/ui/reveal';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowDown, ArrowRight, ArrowUpRight, Flag, Heart, Pause, Play, ShieldCheck, UsersRound } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, Flag, Heart, Pause, Play, ShieldCheck, UsersRound } from 'lucide-react';
 import { useState } from 'react';
 
 const universes = [
@@ -96,7 +96,9 @@ function Stadium() {
     );
 }
 
-export default function Welcome() {
+type ArticlePreview = { id: number; title: string; slug: string; excerpt: string; coverImage: string | null; publishedAt: string };
+
+export default function Welcome({ latestArticles = [] }: { latestArticles?: ArticlePreview[] }) {
     const { auth } = usePage<SharedData>().props;
     const [active, setActive] = useState(0);
     const [paused, setPaused] = useState(false);
@@ -115,12 +117,8 @@ export default function Welcome() {
                             <Brand onDark />
                         </Link>
                         <nav aria-label="Navigation principale" className="flex items-center gap-2 sm:gap-5">
-                            <a href="#concept" className="adf-nav-link hidden md:inline-flex">
-                                L’esprit du club
-                            </a>
-                            <a href="#ecosysteme" className="adf-nav-link hidden lg:inline-flex">
-                                L’écosystème
-                            </a>
+                            <Link href={route('public.club')} className="adf-nav-link hidden md:inline-flex">Le club</Link>
+                            <Link href={route('public.articles')} className="adf-nav-link hidden lg:inline-flex">Actualités</Link>
                             {!auth.user && (
                                 <Link href={route('login')} className="adf-nav-link">
                                     Connexion
@@ -281,10 +279,10 @@ export default function Welcome() {
                                         <ArrowUpRight className="size-5" />
                                     </span>
                                 </Link>
-                                <article className="adf-ecosystem-card">
+                                <Link href={route('public.articles')} className="adf-ecosystem-card">
                                     <div className="flex items-center justify-between">
                                         <Flag className="size-7" />
-                                        <span className="adf-service-status adf-status-soon">À venir</span>
+                                        <span className="adf-service-status">Disponible</span>
                                     </div>
                                     <span className="adf-card-art" aria-hidden="true">
                                         LE
@@ -292,12 +290,13 @@ export default function Welcome() {
                                         CLUB.
                                     </span>
                                     <h3>La vie du club</h3>
-                                    <p>Un futur espace pour les actualités, les histoires et les moments qui nous rassemblent.</p>
-                                </article>
-                                <article className="adf-ecosystem-card">
+                                    <p>Découvrez les actualités, les histoires et les moments qui nous rassemblent.</p>
+                                    <span className="adf-card-action">Lire les actualités <ArrowUpRight className="size-5" /></span>
+                                </Link>
+                                <Link href={auth.user ? route('member.contributions') : route('register')} className="adf-ecosystem-card">
                                     <div className="flex items-center justify-between">
                                         <Heart className="size-7" />
-                                        <span className="adf-service-status adf-status-soon">À venir</span>
+                                        <span className="adf-service-status">Disponible</span>
                                     </div>
                                     <div className="adf-bars-art" aria-hidden="true">
                                         {[35, 60, 45, 85, 65, 100, 80].map((height, index) => (
@@ -305,9 +304,22 @@ export default function Welcome() {
                                         ))}
                                     </div>
                                     <h3>Faire grandir le collectif</h3>
-                                    <p>Le suivi des cotisations viendra accompagner les projets et la vie de l’association.</p>
-                                </article>
+                                    <p>Le suivi des cotisations accompagne les projets et la vie de l’association.</p>
+                                    <span className="adf-card-action">{auth.user ? 'Voir mes cotisations' : 'Rejoindre le club'} <ArrowUpRight className="size-5" /></span>
+                                </Link>
                             </div>
+                        </section>
+                        <section className="adf-home-section" aria-labelledby="news-title">
+                            <div className="adf-section-heading">
+                                <div><p className="adf-home-kicker">03 / LES DERNIÈRES NOUVELLES</p><h2 id="news-title">Le club.<br /><span className="text-blue-300">En mouvement.</span></h2></div>
+                                <Link href={route('public.articles')} className="adf-discover-link">Toutes les actualités <ArrowRight className="size-4" /></Link>
+                            </div>
+                            {latestArticles.length ? <div className="grid gap-5 md:grid-cols-3">
+                                {latestArticles.map((article) => <Link key={article.id} href={route('public.article', { article: article.slug })} className="group overflow-hidden rounded-[26px] border border-white/15 bg-white/[0.07] transition duration-300 hover:-translate-y-1 hover:bg-white/[0.11]">
+                                    {article.coverImage ? <img src={article.coverImage} alt="" className="h-48 w-full object-cover transition duration-500 group-hover:scale-[1.03]" /> : <div className="flex h-48 items-center justify-center bg-gradient-to-br from-blue-600/30 to-indigo-950"><Flag className="size-10 text-blue-200" /></div>}
+                                    <div className="p-6"><span className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.16em] text-blue-300"><CalendarDays className="size-4" /> {new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(new Date(article.publishedAt))}</span><h3 className="mt-4 text-xl font-bold text-white">{article.title}</h3><p className="mt-3 line-clamp-3 leading-7 text-blue-100/65">{article.excerpt}</p></div>
+                                </Link>)}
+                            </div> : <div className="rounded-[26px] border border-white/15 bg-white/[0.07] p-8 text-center text-blue-100/70">Les premières actualités du club seront publiées ici.</div>}
                         </section>
                         <section className="adf-home-cta">
                             <div>
@@ -324,9 +336,7 @@ export default function Welcome() {
                     <footer className="adf-home-footer">
                         <Brand onDark compact />
                         <span>© {new Date().getFullYear()} Amis de foot · Le club, ensemble.</span>
-                        <a href="#main" className="adf-discover-link">
-                            Retour en haut ↑
-                        </a>
+                        <span className="flex flex-wrap items-center gap-4"><Link href={route('public.contact')} className="adf-discover-link">Contact</Link><a href="#main" className="adf-discover-link">Retour en haut ↑</a></span>
                     </footer>
                 </div>
             </div>

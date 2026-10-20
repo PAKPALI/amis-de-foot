@@ -2,7 +2,7 @@ import { Reveal } from '@/components/ui/reveal';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, CalendarDays, CircleCheck, ShieldCheck, UserRound, Wallet } from 'lucide-react';
+import { ArrowRight, BarChart3, CalendarDays, CircleCheck, ShieldCheck, UserRound, Wallet } from 'lucide-react';
 
 interface MemberDashboardProps {
     auth: { user: User };
@@ -70,18 +70,36 @@ export default function MemberDashboard({ auth }: MemberDashboardProps) {
                         </Link>
                     </Reveal>
                     <Reveal delay={0.22}>
-                        <article className="adf-soft-panel flex h-full flex-col rounded-[26px] p-6">
+                        <Link
+                            href={route('member.contributions')}
+                            className="adf-soft-panel group flex h-full flex-col rounded-[26px] p-6 transition-transform duration-200 hover:-translate-y-1"
+                        >
                             <span className="flex size-11 items-center justify-center rounded-2xl bg-sky-100 text-sky-700">
                                 <Wallet className="size-5" />
                             </span>
                             <h2 className="mt-8 text-lg font-bold">Mes cotisations</h2>
                             <p className="text-muted-foreground mt-2 flex-1 text-sm leading-6">
-                                Un accès clair à vos cotisations sera ajouté dans les niveaux suivants.
+                                Consultez vos périodes mensuelles réglées ou en attente.
                             </p>
-                            <span className="text-muted-foreground mt-6 text-xs font-bold tracking-[0.14em] uppercase">À venir</span>
-                        </article>
+                            <span className="text-primary mt-6 inline-flex items-center gap-2 text-sm font-bold">
+                                Voir mes cotisations <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                            </span>
+                        </Link>
                     </Reveal>
                 </div>
+
+                <Reveal delay={0.24}>
+                    <Link href={route('member.statistics')} className="adf-soft-panel flex items-center justify-between gap-5 rounded-[26px] p-6">
+                        <span className="flex items-center gap-4">
+                            <BarChart3 className="size-7 text-blue-600" />
+                            <span>
+                                <strong className="block text-lg">Mes statistiques</strong>
+                                <span className="text-muted-foreground text-sm">Mes adhésions, cotisations et reçus.</span>
+                            </span>
+                        </span>
+                        <ArrowRight className="size-5 text-blue-600" />
+                    </Link>
+                </Reveal>
 
                 {canOpenAdministration && (
                     <Reveal delay={0.28}>

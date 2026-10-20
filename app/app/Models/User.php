@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -16,6 +17,7 @@ class User extends Authenticatable
 
     protected $attributes = [
         'role' => 'member',
+        'account_status' => 'active',
         'must_change_password' => false,
     ];
 
@@ -69,5 +71,15 @@ class User extends Authenticatable
     public function membership(): HasOne
     {
         return $this->hasOne(Membership::class);
+    }
+
+    public function contributionPeriods(): HasMany
+    {
+        return $this->hasMany(ContributionPeriod::class);
+    }
+
+    public function isAccountActive(): bool
+    {
+        return $this->account_status === 'active';
     }
 }

@@ -20,6 +20,7 @@ import AppLogo from './app-logo';
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
     const isAdministration = auth.user?.role === 'administrator' || auth.user?.role === 'manager';
+    const isManager = auth.user?.role === 'manager';
 
     const navigationSections: SidebarNavSection[] = [
         {
@@ -28,7 +29,8 @@ export function AppSidebar() {
                 { title: 'Mon espace', url: '/mon-espace', icon: LayoutDashboard },
                 { title: 'Mon profil', url: '/settings/profile', icon: UserRound },
                 { title: 'Mon adhésion', url: '/mon-adhesion', icon: ClipboardList },
-                { title: 'Cotisations', icon: CreditCard },
+                { title: 'Cotisations', url: '/mes-cotisations', icon: CreditCard },
+                { title: 'Mes statistiques', url: '/mes-statistiques', icon: BarChart3 },
             ],
         },
         ...(isAdministration
@@ -39,11 +41,11 @@ export function AppSidebar() {
                           { title: 'Administration', url: '/administration', icon: ShieldCheck },
                           { title: 'Accès et rôles', url: '/administration/roles', icon: UsersRound },
                           { title: 'Adhésions', url: '/administration/adhesions', icon: ClipboardList },
-                          { title: 'Cotisations', icon: CreditCard },
-                          { title: 'Caisse', icon: Wallet },
-                          { title: 'Rapports et statistiques', icon: BarChart3 },
+                          { title: 'Cotisations', url: '/administration/cotisations', icon: CreditCard },
+                          ...(isManager ? [{ title: 'Caisse', url: '/administration/caisse', icon: Wallet }] : []),
+                          { title: 'Rapports et statistiques', url: '/administration/statistiques', icon: BarChart3 },
                           { title: 'Activités du club', icon: Activity },
-                          { title: 'Actualités', icon: BookOpenText },
+                          { title: 'Actualités', url: '/administration/actualites', icon: BookOpenText },
                       ],
                   },
               ]

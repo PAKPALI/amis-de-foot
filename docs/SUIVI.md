@@ -461,13 +461,152 @@ Le plan préparatoire figure dans `docs/PLAN.md`. Le club indique qu'il ne lance
 - Le plan complet, les commandes et les paramètres de sécurité sont dans `docs/O2SWITCH_STAGING.md`.
 - Références vérifiées : [création de sous-domaines](https://faq.o2switch.fr/cpanel/domaines/configuration-sous-domaine/), [SSH](https://faq.o2switch.fr/guides/webmastering/connexion-ssh/), [Node.js](https://faq.o2switch.fr/guides/nodejs/application-reactjs/) et [protection par mot de passe](https://faq.o2switch.fr/cpanel/fichiers/protection-repertoire-web/).
 
-**Hébergement staging : aucune modification n'a encore été appliquée sur o2switch.**
+**Hébergement staging : installation Composer de production et compilation React/Vite réussies ; configuration cPanel et base MySQL de staging restent à faire.**
 
+### Incident Composer sur le serveur o2switch
+
+- Le club a cloné le dépôt dans `~/adf/amis-de-foot`, puis a lancé `cd app` depuis `~/adf`. Ce chemin ne désigne pas le dossier Laravel cloné ; le dossier de l'application est `~/adf/amis-de-foot/app`.
+- Composer a ensuite signalé que `laravel/pint` verrouillé demande PHP 8.3 alors que le terminal utilise PHP 8.2.34. Pint est une dépendance de développement ; le staging doit installer les dépendances sans `require-dev`.
+- Commandes proposées : `cd ~/adf/amis-de-foot/app`, vérifier `pwd` et `php -v`, puis `composer install --no-dev --optimize-autoloader` et `composer check-platform-reqs --no-dev`.
+- PHP 8.3 est recommandé dans le sélecteur PHP cPanel afin d'aligner le terminal et le site. Ne pas lancer `composer update`, qui modifierait le fichier de verrouillage.
+
+**État :** le diagnostic, la marche à suivre et la réussite de l'installation sont documentés dans `docs/O2SWITCH_STAGING.md`.
+
+### Progression après installation Composer
+
+- Le club a confirmé que les installations Composer ont réussi sur o2switch.
+- La version PHP CLI et le contrôle `composer check-platform-reqs --no-dev` ne sont pas encore rapportés séparément.
+- Le club a ajouté temporairement Node au `PATH` et confirmé Node `v24.21.0`, npm `11.19.0`, `npm ci` réussi (0 vulnérabilité signalée) et `npm run build` réussi (2 434 modules transformés, manifeste créé). npm signale qu'un script d'installation d'esbuild n'a pas été approuvé, mais le build de production a réussi ; aucune approbation supplémentaire n'est demandée à ce stade.
+- La commande `cd ~/adf/amis-de-foot/app` a échoué car ce chemin n'existe pas. Le build a toutefois réussi depuis le dossier `app` qui était déjà ouvert ; son chemin réel reste à confirmer avec `pwd` avant les commandes suivantes.
+- Source : documentation officielle [o2switch — utiliser Node/npm](https://faq.o2switch.fr/guides/nodejs/utiliser-binaire-nodejs-npm-yarn/) et [déployer React](https://faq.o2switch.fr/guides/nodejs/application-reactjs/).
+- **Validation de cette étape : réussie selon la sortie fournie.** La prochaine étape est la préparation cPanel : créer le sous-domaine staging avec racine pointant vers `app/public`, activer HTTPS et une protection par mot de passe, puis créer une base MySQL dédiée. Attendre le retour du club sur cette étape avant la configuration du `.env` et les migrations.
+
+### Recherche de la racine Laravel avant création de la clé
+
+- Le club a essayé `php artisan key:generate` depuis `~/amf/app`; PHP a répondu `Could not open input file: artisan`.
+- Cette commande n'a pas trouvé le point d'entrée Laravel et n'a pas généré la clé. Le chemin exact du dépôt sur l'hébergement reste à identifier ; ne pas déduire qu'il correspond à `~/adf/amis-de-foot/app` ou `~/amf/app`.
+- Le guide demande maintenant de vérifier `pwd` et `ls -la`, puis de rechercher `artisan` avec `find "$HOME" -maxdepth 6 -type f -name artisan -print 2>/dev/null`, et de relancer les commandes depuis son dossier parent.
+- La clé du staging ne doit être générée qu'après création du `.env` dans la racine Laravel.
+- Le club a exécuté `find`, qui a listé plusieurs applications Laravel, dont `/home2/sc4nlba7062/adf/app/artisan`. Son appartenance au dépôt `PAKPALI/amis-de-foot` reste à vérifier avec le remote Git ; ne pas encore lancer de commande Laravel depuis ce chemin.
+- Le club a exécuté `cd app` depuis `~/amf`, restant dans `/home2/sc4nlba7062/amf/app` ; ni `artisan` ni `composer.json` n'y sont présents. `composer i` s'est arrêté sans installer quoi que ce soit. Il faut identifier le clone du dépôt du club via `git remote -v` et vérifier que sa racine Laravel contient `artisan` et `composer.json`.
+- Le club précise avoir supprimé le dossier `amis-de-foot` après extraction de ses données. Les copies restantes sont ambiguës parmi plusieurs projets du compte. Le guide recommande de re-cloner la branche `main` dans `~/apps/amis-de-foot-staging`, puis de vérifier `artisan`, `composer.json` et `package.json` dans `~/apps/amis-de-foot-staging/app` avant toute commande Laravel.
+
+### Déploiement staging déclaré terminé — 16 octobre 2026
+
+- Le club confirme que le déploiement est terminé et que tout fonctionne bien.
+- Le staging et la phase d'hébergement sont validés selon la confirmation globale du club. Aucun détail de domaine ni résultat par test individuel n'a été transmis.
+- Le niveau 4 (cotisations) reste en attente de lancement à la demande du club et de ses règles métier.
+
+## Niveau 4 — Cotisations
+
+**État : implémenté et validé manuellement par le club le 20 octobre 2026.**
+
+### Règles confirmées
+
+- Cotisation mensuelle : 1 000 FCFA, distincte de l'adhésion unique.
+- La première période est le mois suivant l'approbation de l'adhésion.
+- Le membre choisit le nombre de mois ; avant validation, l'écran affiche les mois consécutifs et le total.
+- Aucune période n'est créée à l'avance. Les lignes de cotisation sont créées lors de la validation d'un signalement membre ou d'un enregistrement par l'administration.
+- Aucun délai, aucune pénalité et aucun paiement partiel.
+- Le membre peut signaler un paiement ; l'administration le confirme ou enregistre directement le règlement. Un reçu est alors attribué.
+- Un compte suspendu ou parti ne peut plus se connecter ni créer de cotisation.
+
+### Implémentation et vérifications
+
+- Migrations de niveau 4 appliquées à la base MySQL locale ; statut de compte, périodes, paiements groupés et numéros de reçu.
+- Les espaces membre et administration proposent le choix du nombre de mois, l'aperçu des périodes et le total avant validation.
+- Correction du bouton de confirmation du modal : `transform()` et `post()` Inertia sont appelés séparément. Les retours de succès et d'erreur s'affichent avec SweetAlert2.
+- Le reçu détaillé est accessible depuis l'historique, affiche le membre, le numéro, la date, les mois et le total, et peut être imprimé ou enregistré en PDF.
+- Contrôles réalisés : compilation React/Vite réussie, syntaxe PHP vérifiée et parcours du reçu consulté dans le navigateur.
+- Le club a confirmé le 20 octobre 2026 que les tests manuels sont bons. Le niveau 4 est validé.
 ## Préparation de la publication GitHub (15 octobre 2026)
 
-**État : commit local prêt ; dépôt distant et push en attente de la connexion GitHub.**
+**État : dépôt GitHub public accessible ; cette copie locale est en avance d'un commit sur `origin/main`.**
 
 - Le club a demandé la création/publication d'un dépôt public nommé `amis-de-foot`.
-- Le dépôt local n'avait pas de commit ni de remote ; un premier commit a été créé sur `main` (`fcf7e46`).
-- Avant le commit, le nom du compte de test a été retiré du journal. Les fichiers `.env`, journaux, `vendor`, `node_modules` et base locale sont ignorés et absents du commit.
-- Aucun dépôt GitHub n'a encore été créé et aucun code n'a encore été envoyé à GitHub. Il faut connecter le compte GitHub pour créer le dépôt et pousser `main`.
+- Le club a fourni `https://github.com/PAKPALI/amis-de-foot.git` et le clonage de ce dépôt public sur o2switch a réussi.
+- Au dernier contrôle local du 16 octobre, `main` était en avance d'un commit sur `origin/main` ; les modifications courantes des documents de staging sont également non commitées. Aucun push de ces mises à jour n'a été effectué par cette session.
+
+
+## Préparation du niveau 5 — Caisse et corrections
+
+**État : implémenté et validé manuellement par le club le 20 octobre 2026.**
+
+- Une seule caisse en FCFA ; le responsable enregistrera le solde initial lors de l'ouverture. Son montant sera renseigné au moment de la mise en service.
+- Seul le responsable saisit et approuve les dépenses, y compris celles concernant un administrateur.
+- Une dépense qui ferait passer le solde sous zéro sera refusée.
+- Toute correction financière se fera par contre-écriture gardée dans l'historique.
+- Le plan détaillé figure dans `docs/PLAN.md` ; les décisions sont consignées dans `docs/DECISIONS.md`.
+- Le club a validé le plan du niveau 5 et demandé de commencer le développement.
+
+### Étape 1 — Journal financier et caisse unique
+
+- Création des tables de caisse et de journal des mouvements, avec solde courant, auteur, approbateur, référence, justificatif, source liée et identifiants de contre-écriture.
+- Les migrations préparent une seule caisse en FCFA et reprennent automatiquement les adhésions approuvées avec règlement confirmé et les cotisations confirmées. Les signalements en attente ne sont pas comptabilisés.
+- Les paiements d'adhésion et de cotisation sont désormais ajoutés au journal dans la même transaction que leur confirmation, avec une clé de source empêchant le double comptage.
+- Nouvel écran de caisse réservé au responsable : ouverture au montant réel de la date de bascule, solde, entrées, dépenses, historique avec recherche/tri/pagination responsive et correction auditée par contre-écriture.
+- À la demande du club pendant le contrôle de l'écran, les formulaires d'ouverture, d'entrée, de dépense et de correction sont placés dans des sections repliables avec un en-tête explicite pour garder le journal et le solde lisibles.
+- Après le retour du club signalant qu'une dépense était enregistrée sans alerte visible, le succès de la caisse est maintenant affiché à partir du message flash renvoyé par Laravel lors de la réponse Inertia. La correction a été contrôlée par compilation, TypeScript et lint ciblé ; le club a ensuite validé le test manuel du niveau 5.
+- Les dépenses sont saisies et approuvées par le responsable dans un seul parcours, et refusées si le solde devient négatif. Les administrateurs sans rôle responsable n'ont pas accès aux routes de caisse.
+- Le montant du solde d'ouverture n'est pas fixé dans le code ; le responsable saisira le montant réellement présent à la date de démarrage. Les adhésions/cotisations historiques restent visibles dans le journal mais sont marquées comme antérieures à l'ouverture et ne sont pas ajoutées au solde courant, car les dépenses historiques ne sont pas reprises.
+
+### Vérifications et test manuel à effectuer
+
+- Compilation React/Vite réussie après la mise en place des formulaires repliables et de l'alerte basée sur le message flash serveur (2 441 modules transformés), TypeScript contrôlé par `npx tsc --noEmit`, lint ciblé réussi. Syntaxe PHP validée sur migration, contrôleurs et service. Les deux migrations de caisse sont appliquées à la base MySQL locale. Les cinq routes de caisse apparaissent dans `php artisan route:list --path=caisse`. Aucun jeu de test automatisé n'est ajouté pour l'instant.
+- Le test manuel à effectuer par le responsable : ouvrir la caisse avec un solde rapproché, saisir une dépense dans le solde puis tenter un dépassement, vérifier les adhésions/cotisations confirmées, corriger un mouvement et vérifier que l'original reste visible avec la contre-écriture. Contrôler la page en mobile et ordinateur et confirmer qu'un compte administrateur non responsable reçoit un refus d'accès.
+- Le club a déclaré le test manuel du niveau 5 validé le 20 octobre 2026. Le niveau 5 est clos ; le prochain travail sera le niveau 6 après validation de ses règles de statistiques, de filtres, d'exports et d'accès.
+
+## Préparation du niveau 6 — Statistiques, tableaux et exports
+
+**État : implémenté et validé par le club le 20 octobre 2026.** Après contrôle du calendrier, le club a confirmé « c'est bon » et demandé la prochaine phase.
+
+- Le club a retenu : demandes d'adhésion, cotisations réglées ou à régler, recettes, dépenses et solde de caisse.
+- Filtres confirmés : intervalle de dates libre, membre, statut et catégorie financière. Formats d'export confirmés : Excel et PDF.
+- Les responsables et administrateurs verront les chiffres globaux ; chaque membre aura accès à ses seules statistiques personnelles. Les exports suivront le même périmètre d'accès.
+- Le club a validé le plan et demandé de commencer l'implémentation le 20 octobre 2026.
+
+### Avancement du niveau 6
+
+- Deux routes protégées : statistiques globales pour administrateurs et responsables ; statistiques personnelles pour le compte connecté. Un membre ne peut fournir un identifiant tiers pour élargir sa vue.
+- Filtres : dates libres, membre (vue globale), statuts d'adhésion et de cotisation, catégorie financière (vue globale). Les dates des demandes et des mouvements sont exactes ; les cotisations sont filtrées par mois concerné.
+- Synthèse des adhésions, mois réglés et mois à régler. Les mois absents des tables sont déduits de l'approbation de l'adhésion jusqu'au mois courant, sans insertion ni pénalité. Les comptes suspendus ou partis sont exclus de ce calcul prospectif, faute de date de fin historisée.
+- Recettes et dépenses déduites des mouvements qui affectent le solde, hors ouverture, contre-écritures et mouvements remplacés. Les reçus antérieurs à l'ouverture de caisse restent audités dans le journal, mais n'entrent pas dans ces totaux. Le solde affiché est toujours celui de la caisse entière à ce jour.
+- Écrans responsive avec cartes de synthèse, tableaux DataTables, reçus personnels et export Excel/PDF des données déjà filtrées par le serveur.
+- Après le premier retour du club sur l'ergonomie, les deux filtres de dates « Du » et « Au » ouvrent un calendrier visuel en français : choix du mois et de l'année, navigation, date du jour, effacement et blocage des dates « Au » antérieures à « Du ». Le calendrier se place dans l'écran sur mobile et s'utilise au clavier.
+- Vérification du correctif dans le navigateur local : ouverture et placement des deux calendriers, sélection du 15 au 20 octobre 2026, blocage des jours de fin antérieurs, application effective du filtre à l'URL et aux totaux, puis retour à la vue complète. Rendu du calendrier contrôlé à 390 px de largeur ; compilation Vite, TypeScript et lint ciblé réussis.
+- Correction après observation du club : le calendrier de fin passait derrière les cartes de statistiques en raison de l'ordre de superposition des panneaux avec flou d'arrière-plan. Le panneau de filtres est placé au-dessus des cartes ; le calendrier complet, dont l'action « Aujourd'hui », est désormais visible. Vérifié directement dans le navigateur local, puis TypeScript, lint et compilation relancés.
+- Contrôles : syntaxe PHP, routes, TypeScript, lint ciblé et compilation Vite. La suite fonctionnelle passe avec SQLite en mémoire : 46 tests et 246 assertions, dont trois nouveaux tests sur droits, filtres et calcul de caisse. Sous Windows, `php artisan test` rencontre une erreur de bootstrap PHPUnit ; les tests ont été lancés par l'API PHPUnit après chargement manuel de l'autoload, avec `DB_CONNECTION=sqlite`, `DB_DATABASE=:memory:` et `APP_ENV=testing`.
+
+### Test manuel à valider par le club
+
+1. Avec un compte administrateur ou responsable, ouvrir `/administration/statistiques`. Vérifier les demandes, mois réglés/à régler, recettes, dépenses et solde actuel en comparant avec les pages adhésions, cotisations et caisse.
+2. Ouvrir les calendriers « Du » et « Au », choisir deux dates et changer de mois/année. Vérifier que « Au » bloque les jours antérieurs à « Du », puis appliquer successivement un membre, les deux statuts et une catégorie financière. Vérifier que les tableaux et montants correspondent ; le solde actuel doit rester inchangé par les filtres.
+3. Exporter Excel et PDF avec les filtres actifs. Ouvrir les fichiers, vérifier le résumé, la liste des filtres et les feuilles/pages adhésions, cotisations et caisse.
+4. Avec un membre simple, ouvrir `/mes-statistiques`. Vérifier que seules ses données et ses reçus apparaissent, puis exporter Excel et PDF. Vérifier que la caisse et les autres membres sont absents.
+5. Tester l'accès direct à `/administration/statistiques` avec le membre simple : l'accès doit être refusé. Contrôler les deux vues sur mobile et ordinateur, notamment filtres et tableaux responsive.
+
+Le club a confirmé le niveau 6 validé le 20 octobre 2026. La phase suivante est le site public et le blog. Un plan détaillé est proposé dans `PLAN.md` ; attendre sa validation avant de commencer le niveau 7.
+
+## Niveau 7 — Site public et blog
+
+**État : implémentation terminée le 20 octobre 2026 ; validation manuelle attendue.**
+
+- Le club a validé le plan du niveau 7 puis demandé de commencer l'implémentation.
+- L'accueil public présente désormais les trois dernières actualités publiées et relie les visiteurs à la présentation du club, au blog, au contact, à l'inscription et à la connexion.
+- Les pages publiques `/le-club`, `/actualites`, `/actualites/{slug}` et `/contact` partagent une navigation responsive et l'identité visuelle bleu nuit/glassmorphism du projet.
+- Une actualité contient un titre, une URL lisible unique, un résumé, un contenu, une couverture facultative, un auteur, un état brouillon/publié et une date de publication. Seules les publications effectivement publiées sont visibles sans connexion.
+- Les administrateurs et responsables disposent de `/administration/actualites` pour créer, modifier, publier, repasser en brouillon et supprimer une publication. Les formulaires sont repliables ; les succès et confirmations de suppression utilisent SweetAlert2.
+- Les images sont limitées à JPEG, PNG ou WebP de 4 Mo et placées dans le stockage public Laravel. Le déploiement doit disposer du lien `public/storage`.
+- Les coordonnées officielles n'ont pas été inventées : la page contact invite le visiteur à créer un compte ou à ouvrir son espace. Elles pourront être ajoutées après validation du club.
+- La migration `2026_10_20_150000_create_articles_table.php` a été appliquée à la base MySQL locale. Le lien `public/storage` a été créé sous Windows sous forme de jonction vers `storage/app/public`, afin que les couvertures soient visibles. Aucun test automatique n'a été ajouté ou lancé pendant cette étape, conformément à la consigne de ne pas tester sans demande explicite.
+- À la demande du club, une publication accepte désormais jusqu'à trois photos. La migration `2026_10_20_160000_add_gallery_images_to_articles_table.php` a été appliquée à MySQL. Les photos sont présentées sur la page de l'article dans un slider automatique de 4,5 secondes, avec précédent/suivant, indicateurs, compteur et pause. Le défilement automatique respecte la préférence système de réduction des animations. Une nouvelle sélection remplace la galerie existante ; l'administration peut aussi retirer toutes les photos.
+
+### Test manuel à valider par le club
+
+1. Sans connexion, ouvrir `/`, `/le-club`, `/actualites` et `/contact`. Vérifier la navigation, les boutons d'inscription/connexion et l'affichage sur ordinateur puis mobile.
+2. Avec un administrateur ou responsable, ouvrir `/administration/actualites`, déplier « Nouvelle actualité », enregistrer un brouillon avec trois photos, puis vérifier qu'il n'apparaît pas publiquement. Essayer d'en choisir plus de trois et vérifier l'information affichée.
+3. Modifier ce brouillon, choisir « Publié sur le site » et enregistrer. Vérifier le message SweetAlert2, l'article dans `/actualites`, sa page de lecture, le défilement des trois photos, les flèches, les indicateurs, la pause et sa présence parmi les dernières nouvelles de l'accueil.
+4. Repasser l'article en brouillon et confirmer que son URL publique renvoie une page introuvable. Le republier, puis tester la suppression et sa confirmation SweetAlert2.
+5. Avec un membre simple, tenter d'ouvrir `/administration/actualites` : l'accès doit être refusé. Contrôler le menu public, les formulaires repliables et les images sur mobile, tablette et ordinateur.
+
+Attendre la validation explicite de ce test manuel avant de préparer ou commencer le niveau 8.
