@@ -14,6 +14,7 @@ use App\Http\Controllers\ContributionReceiptController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\PublicSiteController;
 use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Inertia\Inertia;
 
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
@@ -44,6 +45,8 @@ Route::middleware(['auth', 'account.active', 'password.changed'])->group(functio
     })->middleware('role:administrator,manager')->name('admin.dashboard');
 
     Route::middleware('role:administrator,manager')->prefix('administration')->name('admin.')->group(function () {
+        Route::get('utilisateurs', [AdminUserController::class, 'index'])->name('users');
+        Route::post('utilisateurs', [AdminUserController::class, 'store'])->name('users.store');
         Route::get('adhesions', [AdminMembershipController::class, 'index'])->name('memberships');
         Route::post('adhesions/{membership}/approuver', [AdminMembershipController::class, 'approve'])->name('memberships.approve');
         Route::post('adhesions/{membership}/refuser', [AdminMembershipController::class, 'reject'])->name('memberships.reject');

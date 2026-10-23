@@ -7,6 +7,7 @@
 - Un compte membre peut aussi avoir le rôle administrateur ou responsable habilité ; chaque personne garde un compte unique et son propre espace membre.
 - Connexion par téléphone ou adresse e-mail, avec l'un ou l'autre contact requis. Un responsable habilité gère les rôles ; les changements sont motivés et journalisés.
 - Pour les comptes sans e-mail, un administrateur peut générer un mot de passe temporaire à remettre directement au membre. Il doit être changé à la connexion suivante ; seule sa version chiffrée est conservée dans la session et l'action est journalisée.
+- Les administrateurs et responsables disposent de `/administration/utilisateurs` pour créer un compte Administrateur. Le serveur génère un mot de passe provisoire affiché une seule fois, force son changement à la première connexion et journalise l'attribution initiale du rôle. Seul un responsable habilité peut ensuite modifier les rôles existants ou attribuer le rôle Responsable.
 - MySQL pour le développement et la production, selon la décision du club. La base locale de développement se nomme `amis_de_foot`.
 - SweetAlert2 pour les confirmations explicites ; la validation réelle des opérations reste sur le serveur.
 - Système visuel documenté dans `DESIGN_SYSTEM.md` : Tailwind CSS 4, composants React/Radix, palette bleu nuit inspirée des grandes soirées de football, panneaux glassmorphism et Motion for React pour les transitions discrètes. Chaque écran doit être vérifié du mobile à l'ordinateur.

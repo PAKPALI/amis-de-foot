@@ -12,6 +12,7 @@ import {
     LayoutDashboard,
     ShieldCheck,
     UserRound,
+    UserRoundPlus,
     UsersRound,
     Wallet,
 } from 'lucide-react';
@@ -39,6 +40,7 @@ export function AppSidebar() {
                       title: 'Gestion du club',
                       items: [
                           { title: 'Administration', url: '/administration', icon: ShieldCheck },
+                          { title: 'Utilisateurs', url: '/administration/utilisateurs', icon: UserRoundPlus },
                           { title: 'Accès et rôles', url: '/administration/roles', icon: UsersRound },
                           { title: 'Adhésions', url: '/administration/adhesions', icon: ClipboardList },
                           { title: 'Cotisations', url: '/administration/cotisations', icon: CreditCard },

@@ -16,7 +16,7 @@ Le système visuel de `DESIGN_SYSTEM.md` s'applique à tous les niveaux. Chaque 
 | 4 | Cotisations, périodes, paiement manuel et reçus | **Validé par le club le 20 octobre 2026.** |
 | 5 | Caisse et corrections financières | **Validé par le club le 20 octobre 2026.** |
 | 6 | Statistiques, tableaux et exports | **Validé par le club le 20 octobre 2026.** |
-| 7 | Site public et blog | Publication et navigation mobile vérifiées |
+| 7 | Site public et blog | **Validé par le club le 21 octobre 2026.** |
 | 8 | Reprise des données, sauvegarde/restauration et recette | Rapprochement et restauration validés |
 | 9 | Paiement en ligne, après choix du prestataire | Tests du prestataire et rapprochement validés |
 
@@ -101,5 +101,34 @@ Objectif : présenter le club aux visiteurs sans connexion et publier ses actual
 7. Ajouter migration, validations et autorisations pour les articles, leurs statuts de publication, l'accès public et les redirections d'authentification.
 8. Vérifier la navigation visiteur et la gestion d'articles sur mobile, tablette et ordinateur ; mettre à jour la documentation, fournir le rapport et le test manuel.
 
-Le club a validé le plan puis demandé l'implémentation. Les administrateurs et responsables peuvent gérer les publications. Les coordonnées officielles n'ayant pas été fournies, la page contact oriente vers l'inscription, la connexion et l'espace personnel sans inventer de contact. Le niveau 8 reste bloqué jusqu'à la validation manuelle du niveau 7.
+Le club a validé le plan puis demandé l'implémentation. Les administrateurs et responsables peuvent gérer les publications. Les coordonnées officielles n'ayant pas été fournies, la page contact oriente vers l'inscription, la connexion et l'espace personnel sans inventer de contact. Le club a confirmé le résultat le 21 octobre 2026 et demandé le push ; le niveau 7 est clos.
+
+## Niveau 8 — Reprise de données, sauvegarde/restauration et recette : plan proposé
+
+**État : plan détaillé proposé le 21 octobre 2026 ; attendre la validation du club et l'inventaire des données avant toute importation ou changement de production.**
+
+Le 23 octobre 2026, le club a demandé un complément préalable : permettre à un administrateur de créer des comptes Administrateur depuis une rubrique « Utilisateurs ». Ce complément est implémenté et doit être validé manuellement avant la reprise du niveau 8.
+
+Objectif : préparer l'exploitation du club sans perdre de données, en séparant les comptes de test des données réelles et en prouvant qu'une sauvegarde peut être restaurée.
+
+1. **Inventorier les sources** : fichiers Excel/CSV, registres papier, ancienne application ou base, données déjà saisies sur le staging ; relever propriétaire, période couverte, dernière mise à jour, doublons probables et niveau de confiance. Ne pas importer de données sensibles dans le dépôt Git.
+2. **Décider du périmètre de reprise** : membres et coordonnées, statuts, adhésions, paiements d'adhésion, cotisations par mois, recettes/dépenses et justificatifs. Distinguer les données à reprendre, celles à conserver uniquement en archive et celles à ignorer. Les données sans preuve suffisante seront signalées pour arbitrage.
+3. **Établir une date de coupure et un rapprochement** : dater l'état de référence ; documenter le solde réel d'ouverture de caisse ; rapprocher le solde du journal ; définir les règles d'identité/dédoublonnage et les correspondances de colonnes ; obtenir avant/après le nombre d'enregistrements et les totaux par catégorie.
+4. **Préparer l'import reproductible** : modèle de données source anonymisé, table de correspondance, rapport des erreurs et doublons, import en prévisualisation puis validation explicite, traitement idempotent pour éviter les doubles imports, conservation de la source originale en lecture seule.
+5. **Protéger la base** : procédure de sauvegarde avant toute reprise et avant/après chaque mise à jour ; inclure base, fichiers téléversés et `.env` sauvegardé hors du dépôt dans un emplacement protégé ; chiffrer les archives et limiter les accès. Définir la rétention et les responsables de la sauvegarde avec le club.
+6. **Prouver la restauration** : restaurer une sauvegarde dans un environnement isolé (jamais directement sur la base active), appliquer les migrations sur une copie, vérifier la connexion, les fichiers, les comptes et le journal ; consigner date, durée et résultat. Une archive non restaurée n'est pas considérée comme vérifiée.
+7. **Répéter sur staging** : prendre une sauvegarde du staging, faire un essai à blanc, examiner le rapport, obtenir l'approbation du club sur le rapprochement, puis importer dans la base de staging vide ou dédiée. Ne jamais employer `migrate:fresh` ni écraser la production.
+8. **Recetter les parcours** : connexion/rôles, adhésion, cotisation/reçu, caisse/correction, statistiques/exports, blog/photos, accès mobile ; comparer des échantillons de membres, périodes et mouvements avec les sources et vérifier les accès refusés.
+9. **Préparer la mise en service** : procédure de bascule, fenêtre de gel des saisies, sauvegarde finale, import final, rapprochement signé, contrôles d'ouverture et consigne de retour arrière. La bascule réelle nécessite une validation distincte après la recette staging.
+10. **Documenter et attendre** : mettre à jour le journal d'import, les résultats de sauvegarde/restauration, les écarts et le protocole manuel dans `SUIVI.md` et `REPRISE_DONNEES.md`. Arrêter à la recette et attendre la validation manuelle du club avant tout niveau ultérieur.
+
+### Pré-requis à décider avant l'implémentation
+
+- Le club doit fournir les fichiers/sources, idéalement une copie expurgée ou anonymisée pour la conception initiale, et confirmer leur période couverte.
+- Le club doit décider quelles entités et quelle profondeur d'historique reprendre ; le statut actuel de fiabilité de ces historiques est inconnu.
+- Le club doit identifier qui certifie le solde réel à la date de coupure et qui approuve le rapprochement.
+- La fréquence, la durée de conservation et l'emplacement sécurisé des sauvegardes doivent être décidés. Les secrets et données nominatives ne seront pas ajoutés au dépôt.
+- L'import de données réelles en staging ou production ne commence qu'après validation du plan de correspondance et de l'essai à blanc.
+
+Le détail opérationnel et la fiche d'inventaire à remplir sont dans `REPRISE_DONNEES.md`. Aucun import ni changement de base de production n'est inclus dans la préparation de ce plan.
 

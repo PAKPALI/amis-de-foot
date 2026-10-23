@@ -589,7 +589,7 @@ Le club a confirmé le niveau 6 validé le 20 octobre 2026. La phase suivante es
 
 ## Niveau 7 — Site public et blog
 
-**État : implémentation terminée le 20 octobre 2026 ; validation manuelle attendue.**
+**État : implémentation et galerie de photos validées par le club le 21 octobre 2026.**
 
 - Le club a validé le plan du niveau 7 puis demandé de commencer l'implémentation.
 - L'accueil public présente désormais les trois dernières actualités publiées et relie les visiteurs à la présentation du club, au blog, au contact, à l'inscription et à la connexion.
@@ -609,4 +609,45 @@ Le club a confirmé le niveau 6 validé le 20 octobre 2026. La phase suivante es
 4. Repasser l'article en brouillon et confirmer que son URL publique renvoie une page introuvable. Le republier, puis tester la suppression et sa confirmation SweetAlert2.
 5. Avec un membre simple, tenter d'ouvrir `/administration/actualites` : l'accès doit être refusé. Contrôler le menu public, les formulaires repliables et les images sur mobile, tablette et ordinateur.
 
-Attendre la validation explicite de ce test manuel avant de préparer ou commencer le niveau 8.
+Le club a indiqué « c'est bien » le 21 octobre 2026, puis demandé le push. Le commit `56f71ea` a été envoyé sur `origin/main`. Le niveau 7 est clos.
+
+## Niveau 8 — Reprise de données, sauvegarde/restauration et recette
+
+**État : plan détaillé préparé le 21 octobre 2026 ; en attente de validation avant implémentation.**
+
+- Objectif : inventorier les sources, cadrer une reprise sans doublons, établir le rapprochement financier, créer une procédure de sauvegarde/restauration éprouvée et réaliser une recette complète sur staging.
+- Aucun fichier de données source n'a encore été fourni ; aucun import n'a été exécuté.
+- Le périmètre, la période, la fiabilité des historiques, la date de coupure, le solde de caisse à cette date, les responsables du rapprochement et la fréquence/rétention/emplacement sécurisé des sauvegardes restent à confirmer.
+- Le plan détaillé figure dans `PLAN.md` et la fiche opérationnelle/inventaire est dans `REPRISE_DONNEES.md`.
+- Aucune donnée réelle ne doit être versée dans Git. Les imports seront testés à blanc et en staging ; restauration isolée obligatoire avant approbation. La mise en production est une décision ultérieure distincte.
+
+### Préparation à fournir par le club
+
+1. Identifier les sources et joindre les fichiers pertinents ou décrire leur format et leur emplacement. Pour concevoir le modèle, une copie anonymisée suffit.
+2. Préciser les années ou périodes à reprendre et les données à exclure.
+3. Indiquer qui peut certifier le solde réel de caisse à la date de coupure et approuver les écarts.
+4. Indiquer la politique voulue pour les sauvegardes : fréquence, durée de conservation, personnes autorisées et emplacement sécurisé.
+
+Attendre la validation explicite du plan et ces décisions avant d'écrire ou d'importer des données de reprise.
+
+## Complément avant le niveau 8 — Création des utilisateurs administrateurs
+
+**État : implémenté le 23 octobre 2026 ; test manuel attendu avant de poursuivre le niveau 8.**
+
+- Nouvelle rubrique « Utilisateurs » accessible aux administrateurs et responsables depuis la barre latérale et le tableau de bord d'administration.
+- Le formulaire repliable crée uniquement un compte au rôle Administrateur. Il exige le nom et au moins une adresse e-mail ou un téléphone, avec contrôle des doublons côté serveur.
+- Le mot de passe provisoire est généré côté serveur, affiché une seule fois avec SweetAlert2 et doit être changé à la première connexion.
+- L'attribution initiale du rôle Administrateur est ajoutée à l'historique des rôles avec l'auteur de la création.
+- La page affiche les comptes Administrateur et Responsable existants avec leur contact, rôle, statut et date de création.
+- Le rôle Responsable habilité ne peut toujours être attribué ou retiré que par un responsable existant depuis la gestion des rôles.
+- Aucun test automatique n'a été ajouté ou lancé pour cette modification. Le niveau 8 reste en attente pendant la validation manuelle de ce complément.
+
+### Test manuel à valider
+
+1. Avec un administrateur, ouvrir `/administration/utilisateurs` depuis le menu « Utilisateurs ».
+2. Vérifier que le formulaire est replié au chargement, l'ouvrir puis tenter une création sans e-mail ni téléphone : le bouton doit rester désactivé.
+3. Créer un administrateur avec un e-mail ou un téléphone inédit. Copier le mot de passe provisoire affiché dans SweetAlert2 et vérifier que le nouveau compte figure dans le tableau.
+4. Se déconnecter, se connecter avec le nouveau compte et le mot de passe provisoire. Vérifier que le changement de mot de passe est imposé avant l'accès normal.
+5. Après changement, vérifier que ce compte ouvre l'administration et la rubrique « Utilisateurs », mais ne peut pas attribuer le rôle Responsable habilité dans « Accès et rôles ».
+6. Essayer de créer un autre compte avec le même e-mail ou téléphone : le serveur doit refuser le doublon et afficher l'erreur près du champ.
+7. Contrôler le formulaire et le tableau sur mobile et ordinateur. Confirmer le résultat avant de reprendre le niveau 8.

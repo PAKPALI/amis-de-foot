@@ -2,7 +2,7 @@ import { Reveal } from '@/components/ui/reveal';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BarChart3, ClipboardList, CreditCard, Newspaper, ShieldCheck, UsersRound } from 'lucide-react';
+import { ArrowRight, BarChart3, ClipboardList, CreditCard, Newspaper, ShieldCheck, UserRoundPlus, UsersRound } from 'lucide-react';
 
 interface AdministrationDashboardProps {
     auth: { user: User };
@@ -30,6 +30,22 @@ export default function AdministrationDashboard({ auth }: AdministrationDashboar
                             </span>
                         </div>
                     </section>
+                </Reveal>
+
+                <Reveal delay={0.06}>
+                    <Link
+                        href={route('admin.users')}
+                        className="adf-soft-panel group flex items-center justify-between gap-5 rounded-[26px] p-6"
+                    >
+                        <span className="flex items-center gap-4">
+                            <span className="flex size-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700"><UserRoundPlus className="size-6" /></span>
+                            <span>
+                                <strong className="block text-lg">Utilisateurs</strong>
+                                <span className="text-muted-foreground text-sm">Créer un compte administrateur avec un accès provisoire sécurisé.</span>
+                            </span>
+                        </span>
+                        <ArrowRight className="size-5 text-blue-600" />
+                    </Link>
                 </Reveal>
 
                 <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -11,11 +11,11 @@ Ces sujets viennent du cahier des charges. Les lignes marquées « Décidé » o
 | Suspension et départ | **Décidé :** le compte est désactivé dès la suspension ou le départ et ne peut plus se connecter. Les règles de conservation des dettes antérieures ne sont pas nécessaires au niveau 4, car aucune échéance ni pénalité n'est appliquée. | 4 |
 | Accès | **Décidé :** connexion par téléphone ou par e-mail ; au moins un contact doit être renseigné | 2 |
 | Récupération | **Décidé :** pour un compte sans e-mail, un administrateur réinitialise l'accès ; l'utilisateur change le mot de passe temporaire à sa prochaine connexion | 2 |
-| Administration | **Décidé :** seul le responsable habilité attribue ou retire les rôles ; le premier responsable est désigné par une commande d'installation | 2 |
+| Administration | **Décidé :** un administrateur ou responsable peut créer directement un nouveau compte Administrateur depuis « Utilisateurs ». Seul le responsable habilité peut modifier les rôles des comptes existants ou attribuer/retirer le rôle Responsable habilité ; le premier responsable est désigné par une commande d'installation. | 2 |
 | Contrôle des opérations personnelles des admins | **Décidé :** seul le responsable saisit et approuve les dépenses ; un administrateur ne peut pas les enregistrer ou les approuver lui-même. | 5 |
 | Caisse | **Décidé :** une caisse unique en FCFA. Le responsable est seul habilité à saisir et approuver les dépenses. Le solde initial sera enregistré comme mouvement d'ouverture à la mise en service ; le montant reste à renseigner. | 5 |
 | Solde insuffisant et corrections | **Décidé :** une dépense qui ferait passer la caisse sous zéro est refusée. Une opération validée se corrige par contre-écriture conservée dans l'historique, jamais par modification ou suppression silencieuse. | 5 |
-| Reprise | Historiques fiables, date et solde initial | 8 |
+| Reprise de données | À confirmer avant import : sources et période disponibles, entités/historique à reprendre, fiabilité des historiques, date de coupure, responsable du rapprochement, solde réel de caisse à cette date, fréquence/rétention/emplacement sécurisé des sauvegardes. | 8 |
 | Paiement en ligne | Prestataire, canaux, frais, reversements et remboursements | 9 |
 | Exploitation | Fuseau du club, hébergement, domaine, sauvegarde et conservation | 8 |
 | Statistiques | **Décidé :** demandes d'adhésion, cotisations réglées/à régler, recettes, dépenses et solde de caisse. Les tableaux doivent permettre un intervalle de dates libre et des filtres par membre, statut et catégorie financière. | 6 |
